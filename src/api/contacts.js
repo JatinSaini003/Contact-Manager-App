@@ -1,5 +1,5 @@
 import axios from 'axios';
 
 export default axios.create({
-    baseURL: "https://localhost:3006/db.json",
+    baseURL: "http://localhost:3006/",
 });
