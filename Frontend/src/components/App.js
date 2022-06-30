@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import api from '../api/contacts';
+// import api from '../api/contacts';
 // import data from '../api/db.json';
 import './App.css';
 import Header from './Header';
@@ -13,8 +13,20 @@ import ContactDetail from './ContactDetail';
 function App() {
 
   const retrieveContacts = async () => {
-    const response = await api.get("/contacts");
-    return response.data;
+    // const response = await api.get("/contacts");
+
+    const req = await fetch('http://localhost:4000/addContact');
+    if (!req.ok) {
+      alert(req.statusText);
+    }
+
+    const data = await req.json();
+    if (!data) {
+      alert("Not Found");
+      return
+    }
+    return data;
+    // return response.data;
   }
 
   // const LOCAL_STORAGE_KEY = "contacts";
@@ -28,16 +40,37 @@ function App() {
       id: uuidv4(),
       ...contact
     }
-    const response = await api.post("/contacts", request);
-    setContacts([...contacts, response.data]);
+
+    // const response = await api.post("/contacts", request);
+    // setContacts([...contacts, response.data]);
+
+    const { id, name, email } = request;
+
+    const res = await fetch('http://localhost:4000/addContact', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, name, email })
+    });
+
+    const data = await res.json();
+    if (res.status === 422 || !data) {
+      alert("All The fields are mandatory to fill!");
+    } else {
+      alert("Successful");
+    }
     // setContacts([...contacts, { id: uuidv4(), ...contact }]);
   };
 
 
   // UPDATE CONTACT HANDLER
   const UpdateContactHandler = async (contact) => {
-    const response = await api.put(`/contacts/${contact.id}`, contact);
-    const { id } = response.data;
+    const response = await fetch('http://localhost:4000/update', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(contact)
+    });
+    // const response = await api.put(`/contacts/${contact.id}`, contact);
+    const { id } = contact.id;
 
     setContacts(contacts.map((contact) => {
       return (contact.id === id) ? { ...response.data } : contact;
@@ -47,12 +80,19 @@ function App() {
 
   // REMOVE CONTACT HANDLER
   const removeContactHandler = async (id) => {
-    await api.delete(`/contacts/${id}`);
-    const newContactList = contacts.filter((contact) => {
-      return contact.id !== id;
+    // await api.delete(`/contacts/${id}`);
+    const response = await fetch('http://localhost:4000/remove', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id })
     });
 
-    setContacts(newContactList);
+    if (response) alert("deleted");
+
+    const newContactList = await fetch('http://localhost:4000/addContact');
+    const data = await newContactList.json();
+
+    setContacts(data);
   }
 
 
