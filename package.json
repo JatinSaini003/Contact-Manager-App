@@ -1,0 +1,28 @@
+{
+  "name": "contact-application",
+  "version": "1.0.0",
+  "description": "Contact Appliaction for managing contacts with name and email @PROJECT created by \"JATIN SAINI\"",
+  "main": "index.js",
+  "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "client": "npm start --prefix Frontend",
+    "server": "npm start --prefix Backend",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JatinSaini003/Contact-Manager-App.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JatinSaini003/Contact-Manager-App/issues"
+  },
+  "homepage": "https://github.com/JatinSaini003/Contact-Manager-App#readme",
+  "dependencies": {
+    "concurrently": "^7.2.2",
+    "node": "^18.4.0"
+  }
+}
